@@ -2,6 +2,7 @@ package unapplenews
 
 import (
 	"io"
+	"net/http"
 
 	"golang.org/x/net/html"
 )
@@ -46,4 +47,18 @@ func findArticleURL(r io.Reader) (string, error) {
 	}
 	f(doc)
 	return url, nil
+}
+
+// UnAppleNews takes an apple news url and returns the article url
+func UnAppleNews(url string) (string, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	articleURL, err := findArticleURL(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return articleURL, nil
 }
